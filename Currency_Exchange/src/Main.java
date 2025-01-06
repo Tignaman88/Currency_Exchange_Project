@@ -16,13 +16,38 @@ public class Main {
 
     public static void main(String[] args) throws URISyntaxException {
 
-        String currencyToExchange;
+        String currencyToExchange = "";
         String currencyExchanged;
         double amountToExchange;
         String apiKey = "5879392cbdbcaf6d4b7ab05e";
 
+        Scanner inputUser = new Scanner(System.in);
+        System.out.println("Hello! Please enter the currency you'd like to exchange(needs to be 3 characters, do not enter a number): ");
+
+        while (currencyToExchange.length() != 3) {
+           if(!inputUser.hasNextInt()) {
+//                currencyToExchange = inputUser.nextLine();
+                if (currencyToExchange.length() != 3) {
+                    System.out.println("Value entered is not 3 characters long, please try again: ");
+                    inputUser.next();
+                    currencyToExchange = inputUser.nextLine();
+                }
+           } else {
+                System.out.println("Wrong value entered, please try again: ");
+                inputUser.next();
+                currencyToExchange = inputUser.nextLine();
+            }
+        }
+
+
+
+        System.out.println("Thank you! Now, please select the currency you'd like to be exchanged to: ");
+        currencyExchanged = inputUser.nextLine();
+        System.out.println("And now please enter the amount you want to exchange: ");
+        amountToExchange = inputUser.nextDouble();
+
         // Setting URL
-        String url_str = "https://v6.exchangerate-api.com/v6/" + apiKey + "/pair/EUR/GBP/30";
+        String url_str = "https://v6.exchangerate-api.com/v6/" + apiKey + "/pair/" + currencyToExchange + "/" + currencyExchanged + "/" + amountToExchange;
 
         // Making Request
         URL url = null;
@@ -59,7 +84,6 @@ public class Main {
 
         JsonObject expectedJsonObject;
         expectedJsonObject = JsonParser.parseString(String.valueOf(stringToParseInJson)).getAsJsonObject();
-        System.out.println(expectedJsonObject);
 
 
         // Accessing object
@@ -70,14 +94,8 @@ public class Main {
 
 
 
-        Scanner inputUser = new Scanner(System.in);
-        System.out.println("Hello! Please enter the currency you'd like to exchange: ");
-        currencyToExchange = inputUser.nextLine();
-        System.out.println("Thank you! Now, please select the currency you'd like to be exchanged to: ");
-        currencyExchanged = inputUser.nextLine();
-        System.out.println("And now please enter the amount you want to exchange: ");
-        amountToExchange = inputUser.nextDouble();
-        exchangeRate(currencyToExchange, currencyExchanged, amountToExchange);
+
+//        exchangeRate(currencyToExchange, currencyExchanged, amountToExchange);
     }
 
 }

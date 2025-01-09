@@ -2,7 +2,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.InputMismatchException;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Scanner;
 import java.net.http.*;
 import java.net.http.HttpResponse.*;
@@ -16,35 +18,57 @@ public class Main {
 
     public static void main(String[] args) throws URISyntaxException {
 
-        String currencyToExchange = "";
+        String currencyToExchange;
         String currencyExchanged;
         double amountToExchange;
         String apiKey = "5879392cbdbcaf6d4b7ab05e";
 
         Scanner inputUser = new Scanner(System.in);
-        System.out.println("Hello! Please enter the currency you'd like to exchange(needs to be 3 characters, do not enter a number): ");
+        System.out.println("Please insert the currency you'd like to exchange(only use letters and no more than 3 characters): ");
 
-        while (currencyToExchange.length() != 3) {
-           if(!inputUser.hasNextInt()) {
-//                currencyToExchange = inputUser.nextLine();
-                if (currencyToExchange.length() != 3) {
-                    System.out.println("Value entered is not 3 characters long, please try again: ");
-                    inputUser.next();
-                    currencyToExchange = inputUser.nextLine();
-                }
-           } else {
-                System.out.println("Wrong value entered, please try again: ");
-                inputUser.next();
-                currencyToExchange = inputUser.nextLine();
+
+        while (true) {
+            currencyToExchange = inputUser.nextLine();
+            if (currencyToExchange.length() != 3 || currencyToExchange.matches(".*\\d.*")) {
+                System.out.println("You've not entered 3 characters, or your value entered contains a number, please try again: ");
+            } else {
+                break;
             }
         }
 
 
-
         System.out.println("Thank you! Now, please select the currency you'd like to be exchanged to: ");
-        currencyExchanged = inputUser.nextLine();
+        while (true) {
+            currencyExchanged = inputUser.nextLine();
+            if (currencyExchanged.length() != 3 || currencyExchanged.matches(".*\\d.*")) {
+                System.out.println("You've not entered 3 characters, or your value entered contains a number, please try again: ");
+            } else {
+                break;
+            }
+        }
+
         System.out.println("And now please enter the amount you want to exchange: ");
-        amountToExchange = inputUser.nextDouble();
+        while (true) {
+            try {
+                amountToExchange = inputUser.nextDouble();
+                Double.valueOf(amountToExchange);
+                break;
+            }
+            catch(InputMismatchException nfe){
+                System.out.println("Invalid number, please try again: ");
+                inputUser.nextLine();
+            }
+
+        }
+
+
+
+
+
+
+
+
+
 
         // Setting URL
         String url_str = "https://v6.exchangerate-api.com/v6/" + apiKey + "/pair/" + currencyToExchange + "/" + currencyExchanged + "/" + amountToExchange;
@@ -93,9 +117,6 @@ public class Main {
         System.out.println(amount);
 
 
-
-
-//        exchangeRate(currencyToExchange, currencyExchanged, amountToExchange);
     }
 
 }

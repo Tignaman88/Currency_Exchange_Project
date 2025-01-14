@@ -27,7 +27,27 @@ public class Main {
 
     public static void main(String[] args) throws URISyntaxException, IOException {
 
-        getJSonToCompareWithUserInput();
+        // Create object to see if input user is contained in JSon file
+        stringToCompareWithInputUserBuilder = new StringBuilder();
+        String url_str_to_compare = "https://v6.exchangerate-api.com/v6/5879392cbdbcaf6d4b7ab05e/latest/USD";
+        URL url_to_compare = null;
+        url_to_compare = new URL(url_str_to_compare);
+        HttpURLConnection requestToCompare = null;
+        requestToCompare = (HttpURLConnection) url_to_compare.openConnection();
+        requestToCompare.setRequestMethod("GET");
+        requestToCompare.connect();
+        try {
+            Scanner apiConnectionScanner = new Scanner(requestToCompare.getInputStream());
+            while (apiConnectionScanner.hasNext()) {
+                stringToCompareWithInputUserBuilder.append(apiConnectionScanner.nextLine());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stringToCompareWithInputUser = stringToCompareWithInputUserBuilder.toString();
+
+
+
 
 
         Scanner inputUser = new Scanner(System.in);
@@ -50,27 +70,6 @@ public class Main {
         extractedJsonObject(stringToParseInJson, amountToExchange, currencyToExchange, currencyExchanged);
 
 
-    }
-
-    private static void getJSonToCompareWithUserInput() throws IOException {
-        // Create object to see if input user is contained in JSon file
-        stringToCompareWithInputUserBuilder = new StringBuilder();
-        String url_str_to_compare = "https://v6.exchangerate-api.com/v6/5879392cbdbcaf6d4b7ab05e/latest/USD";
-        URL url_to_compare = null;
-        url_to_compare = new URL(url_str_to_compare);
-        HttpURLConnection requestToCompare = null;
-        requestToCompare = (HttpURLConnection) url_to_compare.openConnection();
-        requestToCompare.setRequestMethod("GET");
-        requestToCompare.connect();
-        try {
-            Scanner apiConnectionScanner = new Scanner(requestToCompare.getInputStream());
-            while (apiConnectionScanner.hasNext()) {
-                stringToCompareWithInputUserBuilder.append(apiConnectionScanner.nextLine());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stringToCompareWithInputUser = stringToCompareWithInputUserBuilder.toString();
     }
 
     private static void extractedJsonObject(StringBuilder stringToParseInJson, double amountToExchange, String currencyToExchange, String currencyExchanged) {
@@ -147,7 +146,7 @@ public class Main {
         while (true) {
             currencyExchanged = inputUser.nextLine();
             if (currencyExchanged.length() != 3 || currencyExchanged.matches(".*\\d.*") || !stringToCompareWithInputUser.contains(currencyExchanged.toUpperCase())) {
-                System.out.println("You've not entered 3 characters, or your value entered contains a number, or you haven't entered a correct currency, please try again: ");
+                System.out.println("You've not entered 3 characters, or your value entered contains a number, please try again: ");
             } else {
                 break;
             }
@@ -164,7 +163,7 @@ public class Main {
         while (true) {
             currencyToExchange = inputUser.nextLine();
             if (currencyToExchange.length() != 3 || currencyToExchange.matches(".*\\d.*") || !stringToCompareWithInputUser.contains(currencyToExchange.toUpperCase())) {
-                System.out.println("You've not entered 3 characters, or your value entered contains a number, or you haven't entered a correct currency, please try again: ");
+                System.out.println("You've not entered 3 characters, or your value entered contains a number, please try again: ");
             } else {
                 break;
             }
